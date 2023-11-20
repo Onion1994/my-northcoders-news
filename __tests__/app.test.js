@@ -25,3 +25,9 @@ describe('GET /api/topics', () => {
         return request(app).get('/api/invalid-endpoint').expect(404)
     })
 })
+
+describe('GET /api/articles/:article_id', () => {
+    test('200: returns an article object by its ID', () => {
+        return request(app).get('/api/articles/1')
+    })
+})

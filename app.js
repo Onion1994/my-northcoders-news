@@ -8,6 +8,8 @@ app.use(express.json())
 
 app.get('/api/topics', getTopics)
 
+
+
 app.use(handlePsqlErrors)
 app.use(handleCustomErrors)
 app.use(handleServerErrors)
