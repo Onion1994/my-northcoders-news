@@ -1,5 +1,6 @@
 const db = require('../db/connection')
 const fs = require('fs')
+const endpoints = require('../endpoints.json')
 
 exports.selectTopics = () => {
     return db.query(`SELECT * FROM topics`).then((data) => {
@@ -8,9 +9,5 @@ exports.selectTopics = () => {
 }
 
 exports.getAllEndpoints = () => {
-    return new Promise((resolve, reject) => {
-        fs.readFile('endpoints.json', 'utf8', function(err, data){
-            if (err) reject(err);
-            else resolve(JSON.parse(data));
-    })})
+    return endpoints
 }

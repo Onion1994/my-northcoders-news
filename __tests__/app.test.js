@@ -30,12 +30,12 @@ describe('GET /api', () => {
     test('200: returns an object describing all the available endpoints', () => {
         return request(app).get('/api').expect(200).then(({ body }) => {
             const { endpoints } = body
-            Object.entries(endpoints).forEach((endpoint) => {
-                expect(endpoint[1].description).toEqual(expect.any(String))
-                expect(endpoint[1].queries).toEqual(expect.any(Array))
-                expect(endpoint[1].exampleResponse).toEqual(expect.any(Object))
-            }
-            )
-            }) 
-        })
+            Object.values(endpoints).forEach((endpoint) => {
+                expect(endpoint).toMatchObject({
+                    description: expect.any(String),
+                    queries: expect.any(Array),
+                    exampleResponse: expect.any(Object)
+                })})
+        }) 
     })
+})

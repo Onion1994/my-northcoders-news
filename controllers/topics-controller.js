@@ -7,7 +7,6 @@ exports.getTopics = (req, res, next) => {
 }
 
 exports.getEndpoints = (req, res, next) => {
-    getAllEndpoints().then((endpoints) => {
-        res.status(200).send({ endpoints })
-    })
+    const endpoints = getAllEndpoints()
+    res.status(200).send({ endpoints })
 }
