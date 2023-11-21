@@ -26,6 +26,34 @@ describe('GET /api/topics', () => {
     })
 })
 
+
+describe('GET /api/articles/:article_id', () => {
+    test('200: returns an article object by its ID', () => {
+        return request(app).get('/api/articles/1').expect(200).then(({ body }) => {
+            const { article } = body
+            expect(article.article_id).toBe(1)
+            expect(article.title).toEqual(expect.any(String))
+            expect(article.topic).toEqual(expect.any(String))
+            expect(article.body).toEqual(expect.any(String))
+            expect(article.created_at).toEqual(expect.any(String))
+            expect(article.votes).toEqual(expect.any(Number))
+            expect(article.article_img_url).toEqual(expect.any(String))
+        })
+    })
+    test('404: returns error when user inputs non-existent ID', () => {
+        return request(app).get('/api/articles/999').expect(404).then(({ body }) => {
+            const { msg } = body
+            expect(msg).toBe('ID does not exist')
+        })
+    })
+    test('400: returns error when user inputs invalid ID', () => {
+        return request(app).get('/api/articles/one').expect(400).then(({ body }) => {
+            const { msg } = body
+            expect(msg).toBe('Bad Request')
+        })
+    })
+})
+
 describe('GET /api', () => {
     test('200: returns an object describing all the available endpoints', () => {
         return request(app).get('/api').expect(200).then(({ body }) => {
@@ -39,3 +67,4 @@ describe('GET /api', () => {
         }) 
     })
 })
+
