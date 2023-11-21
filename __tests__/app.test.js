@@ -30,7 +30,7 @@ describe('GET /api/articles/:article_id', () => {
     test('200: returns an article object by its ID', () => {
         return request(app).get('/api/articles/1').expect(200).then(({ body }) => {
             const { article } = body
-            expect(article.article_id).toEqual(expect.any(Number))
+            expect(article.article_id).toBe(1)
             expect(article.title).toEqual(expect.any(String))
             expect(article.topic).toEqual(expect.any(String))
             expect(article.body).toEqual(expect.any(String))
