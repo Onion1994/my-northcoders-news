@@ -9,3 +9,14 @@ exports.selectArticleById = (id) => {
         }
     })
 }
+
+exports.selectAllArticles = () => {
+    return db.query(`SELECT title, article_id, topic, created_at, votes, article_img_url, (
+        SELECT COUNT(*) 
+        FROM comments 
+        WHERE comments.article_id = articles.article_id
+    ) AS comment_count FROM articles ORDER BY created_at DESC`)
+    .then((data) => {
+        return data.rows
+    })
+}

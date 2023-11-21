@@ -3,6 +3,7 @@ const app = require('../app')
 const data = require('../db/data/test-data/index')
 const seed = require('../db/seeds/seed')
 const request = require('supertest')
+const { string } = require('pg-format')
 
 beforeEach(() => seed(data))
 
@@ -16,8 +17,10 @@ describe('GET /api/topics', () => {
             const { topics } = body
             expect(topics).toHaveLength(3);
             topics.forEach((topic) => {
-                expect(topic.slug).toEqual(expect.any(String));
-                expect(topic.description).toEqual(expect.any(String));
+                expect(topic).toMatchObject({
+                    slug: expect.any(String),
+                    description: expect.any(String)
+                })
             })
         })
     })
@@ -32,12 +35,14 @@ describe('GET /api/articles/:article_id', () => {
         return request(app).get('/api/articles/1').expect(200).then(({ body }) => {
             const { article } = body
             expect(article.article_id).toBe(1)
-            expect(article.title).toEqual(expect.any(String))
-            expect(article.topic).toEqual(expect.any(String))
-            expect(article.body).toEqual(expect.any(String))
-            expect(article.created_at).toEqual(expect.any(String))
-            expect(article.votes).toEqual(expect.any(Number))
-            expect(article.article_img_url).toEqual(expect.any(String))
+            expect(article).toMatchObject({
+                title: expect.any(String),
+                topic: expect.any(String),
+                body: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                article_img_url: expect.any(String)
+            })
         })
     })
     test('404: returns error when user inputs non-existent ID', () => {
@@ -65,6 +70,46 @@ describe('GET /api', () => {
                     exampleResponse: expect.any(Object)
                 })})
         }) 
+    })
+})
+
+describe('GET /api/articles', () => {
+    test('200: returns an articles array of article objects', () => {
+        return request(app).get('/api/articles').expect(200).then(({ body }) => {
+            const { articles } = body
+            expect(articles).toHaveLength(13)
+            articles.forEach((article) => {
+                expect(article).toMatchObject({
+                    title: expect.any(String),
+                    article_id: expect.any(Number),
+                    topic: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    article_img_url: expect.any(String),
+                    comment_count: expect.any(String)
+                })
+            })
+        })
+    })
+    test('200: the articles should be sorted by date in descending order', () => {
+        return request(app).get('/api/articles').expect(200).then(({ body }) => {
+            const { articles } = body
+            expect(articles).toBeSortedBy("created_at", { descending: true })
+        })
+    })
+    test('there should not be a body property present on any of the article objects.', () => {
+        return request(app).get('/api/articles').expect(200).then(({ body }) => {
+            const { articles } = body
+            articles.forEach((article) => {
+                expect(article).not.toHaveProperty('body')
+            })
+        })
+    })
+    test('200: should return a property of comment_count, which is the total count of all the comments for each article_id', () => {
+        return request(app).get('/api/articles').expect(200).then(({ body }) => {
+            const { articles } = body
+            expect(articles[0].comment_count).toBe("2")
+        })
     })
 })
 
