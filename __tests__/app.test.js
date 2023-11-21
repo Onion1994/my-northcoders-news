@@ -26,6 +26,7 @@ describe('GET /api/topics', () => {
     })
 })
 
+
 describe('GET /api/articles/:article_id', () => {
     test('200: returns an article object by its ID', () => {
         return request(app).get('/api/articles/1').expect(200).then(({ body }) => {
@@ -52,3 +53,18 @@ describe('GET /api/articles/:article_id', () => {
         })
     })
 })
+
+describe('GET /api', () => {
+    test('200: returns an object describing all the available endpoints', () => {
+        return request(app).get('/api').expect(200).then(({ body }) => {
+            const { endpoints } = body
+            Object.values(endpoints).forEach((endpoint) => {
+                expect(endpoint).toMatchObject({
+                    description: expect.any(String),
+                    queries: expect.any(Array),
+                    exampleResponse: expect.any(Object)
+                })})
+        }) 
+    })
+})
+
