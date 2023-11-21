@@ -113,3 +113,46 @@ describe('GET /api/articles', () => {
     })
 })
 
+describe('GET /api/articles/:article_id/comments', () =>{
+    test('200: returns an array of comment objects for the given article_id', () => {
+        return request(app).get('/api/articles/1/comments').expect(200).then(({ body }) => {
+            const { comments } = body
+            expect(comments).toHaveLength(11)
+            comments.forEach((comment) => {
+                expect(comment.article_id).toBe(1)
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                })
+            })
+        })
+    })
+    test('200: comments should be served with the most recent comments first', () => {
+        return request(app).get('/api/articles/1/comments').expect(200).then(({ body }) => {
+            const { comments } = body
+            expect(comments).toBeSortedBy("created_at", { descending: true })
+        })
+    })
+    test('404: returns error when user inputs non-existent ID', () => {
+        return request(app).get('/api/articles/999/comments').expect(404).then(({ body }) => {
+            const { msg } = body
+            expect(msg).toBe('ID does not exist')
+        })
+    })
+    test('400: returns error when user inputs invalid ID', () => {
+        return request(app).get('/api/articles/one/comments').expect(400).then(({ body }) => {
+            const { msg } = body
+            expect(msg).toBe('Bad Request')
+        })
+    })
+    test('200: returns an empty array if the article has no comments', () => {
+        return request(app).get('/api/articles/7/comments').expect(200).then(({ body }) => {
+            const { comments } = body
+            expect(comments).toEqual([])
+        })
+    }) 
+})
+
