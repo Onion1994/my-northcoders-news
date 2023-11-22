@@ -165,12 +165,14 @@ describe('POST /api/articles/:article_id/comments', () => {
         }
         return request(app).post('/api/articles/3/comments').send(newComment).expect(201).then(({ body }) => {
             const { comment } = body
-            expect(comment.comment_id).toBe(19)
-            expect(comment.author).toBe('butter_bridge')
-            expect(comment.body).toBe('this comment got posted')
-            expect(comment.votes).toBe(0)
-            expect(comment.article_id).toBe(3)
-            expect(comment.created_at).toEqual(expect.any(String))
+            expect(comment).toMatchObject({
+                comment_id: 19,
+                author: 'butter_bridge',
+                body: 'this comment got posted',
+                votes: 0,
+                article_id: 3,
+                created_at: expect.any(String)
+            })
         })
     })
     test('404: returns error when user inputs non-existent ID', () => {
