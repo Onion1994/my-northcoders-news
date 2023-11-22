@@ -28,11 +28,8 @@ exports.selectArticlesComments = (id) => {
 }
 
 exports.addCommentByArticleId = (body, author, article_id) => {
-    const created_at = new Date()
-    return db.query(`INSERT INTO comments (body, author, article_id, votes, created_at) VALUES ($1, $2, $3, 0, $4) RETURNING *`, [body, author, article_id, created_at]).then((data) => {
+    return db.query(`INSERT INTO comments (body, author, article_id) VALUES ($1, $2, $3) RETURNING *`, [body, author, article_id]).then((data) => {
         return data.rows
-    })
-    .catch((err) => {
     })
 }
 
