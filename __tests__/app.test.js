@@ -139,7 +139,7 @@ describe('GET /api/articles/:article_id/comments', () =>{
     test('404: returns error when user inputs non-existent ID', () => {
         return request(app).get('/api/articles/999/comments').expect(404).then(({ body }) => {
             const { msg } = body
-            expect(msg).toBe('ID does not exist')
+            expect(msg).toBe('Not Found')
         })
     })
     test('400: returns error when user inputs invalid ID', () => {
@@ -154,5 +154,77 @@ describe('GET /api/articles/:article_id/comments', () =>{
             expect(comments).toEqual([])
         })
     }) 
+})
+
+describe('POST /api/articles/:article_id/comments', () => {
+    test('201: user can post new comments under specific articles', () => {
+        const newComment = {
+            username: 'butter_bridge',
+            body: 'this comment got posted'
+        }
+        return request(app).post('/api/articles/3/comments').send(newComment).expect(201).then(({ body }) => {
+            const { comment } = body
+            expect(comment).toMatchObject({
+                comment_id: 19,
+                author: 'butter_bridge',
+                body: 'this comment got posted',
+                votes: 0,
+                article_id: 3,
+                created_at: expect.any(String)
+            })
+        })
+    })
+    test('404: returns error when user inputs non-existent ID', () => {
+        const newComment = {
+            username: 'butter_bridge',
+            body: 'this comment did not get posted'
+        }
+        return request(app).post('/api/articles/999/comments').send(newComment).expect(404).then(({ body }) => {
+            const { msg } = body
+            expect(msg).toBe('Not Found')
+        })
+    })
+    test('400: returns error when user inputs invalid ID', () => {
+        const newComment = {
+            username: 'butter_bridge',
+            body: 'this comment did not get posted'
+        }
+        return request(app).post('/api/articles/one/comments').send(newComment).expect(400).then(({ body }) => {
+            const { msg } = body
+            expect(msg).toBe('Bad Request')
+        })
+    })
+    test('404: returns error when user posts with a non-existent username', () => {
+        const newComment = {
+            username: 'non_existent_username',
+            body: 'this comment did not get posted'
+        }
+        return request(app).post('/api/articles/3/comments').send(newComment).expect(404).then(({ body }) => {
+            const { msg } = body
+            expect(msg).toBe('Not Found')
+        })
+    })
+    test("201: should ignore unnecessary properties on the comment's body", () => {
+        const newComment = {
+            username: 'butter_bridge',
+            body: 'this comment got posted',
+            votes: 99,
+            article_id: 99,
+            created_at: 2023,
+            random_property: "random Value"
+        }
+        return request(app).post('/api/articles/3/comments').send(newComment).expect(201).then(({ body }) => {
+            const { comment } = body
+            expect(comment).toMatchObject({
+                comment_id: 19,
+                author: 'butter_bridge',
+                body: 'this comment got posted',
+                votes: 0,
+                article_id: 3,
+                created_at: expect.any(String)
+            })
+            expect(comment).not.toHaveProperty('random_property')
+        })
+    })
 })
 
