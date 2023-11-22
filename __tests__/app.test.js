@@ -174,14 +174,14 @@ describe('POST /api/articles/:article_id/comments', () => {
             })
         })
     })
-    test('400: returns error when user inputs non-existent ID', () => {
+    test('404: returns error when user inputs non-existent ID', () => {
         const newComment = {
             username: 'butter_bridge',
             body: 'this comment did not get posted'
         }
-        return request(app).post('/api/articles/999/comments').send(newComment).expect(400).then(({ body }) => {
+        return request(app).post('/api/articles/999/comments').send(newComment).expect(404).then(({ body }) => {
             const { msg } = body
-            expect(msg).toBe('Bad Request')
+            expect(msg).toBe('Not Found')
         })
     })
     test('400: returns error when user inputs invalid ID', () => {
@@ -194,14 +194,14 @@ describe('POST /api/articles/:article_id/comments', () => {
             expect(msg).toBe('Bad Request')
         })
     })
-    test('400: returns error when user posts with a non-existent username', () => {
+    test('404: returns error when user posts with a non-existent username', () => {
         const newComment = {
             username: 'non_existent_username',
             body: 'this comment did not get posted'
         }
-        return request(app).post('/api/articles/3/comments').send(newComment).expect(400).then(({ body }) => {
+        return request(app).post('/api/articles/3/comments').send(newComment).expect(404).then(({ body }) => {
             const { msg } = body
-            expect(msg).toBe('Bad Request')
+            expect(msg).toBe('Not Found')
         })
     })
     test("201: should ignore unnecessary properties on the comment's body", () => {
