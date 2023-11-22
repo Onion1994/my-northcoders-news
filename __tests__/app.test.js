@@ -48,7 +48,7 @@ describe('GET /api/articles/:article_id', () => {
     test('404: returns error when user inputs non-existent ID', () => {
         return request(app).get('/api/articles/999').expect(404).then(({ body }) => {
             const { msg } = body
-            expect(msg).toBe('ID does not exist')
+            expect(msg).toBe('Not Found')
         })
     })
     test('400: returns error when user inputs invalid ID', () => {
@@ -224,7 +224,95 @@ describe('POST /api/articles/:article_id/comments', () => {
                 created_at: expect.any(String)
             })
             expect(comment).not.toHaveProperty('random_property')
+            expect(comment.created_at).not.toBe(2023)
         })
     })
 })
+
+describe('PATCH /api/articles/:article_id', () => {
+    test('200: increments the votes of a specific article by a specified amount', () => {
+      const updatedVotes = { inc_votes : 25 }
+      return request(app).patch('/api/articles/1').send(updatedVotes).expect(200).then(({ body }) => {
+        const { article } = body
+        expect(article).toMatchObject({
+              article_id: 1,
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: 125,
+              article_img_url: expect.any(String),
+        })
+      })
+    })
+    test('200: decrements the votes of a specific article by a specified amount', () => {
+      const updatedVotes = { inc_votes : -25 }
+      return request(app).patch('/api/articles/1').send(updatedVotes).expect(200).then(({ body }) => {
+        const { article } = body
+        expect(article).toMatchObject({
+              article_id: 1,
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: 75,
+              article_img_url: expect.any(String),
+        })
+      })
+    })
+    test("200: should ignore unnecessary properties on the inc_votes'body", () => {
+        const updatedVotes = { 
+            inc_votes : 25,
+            article_id: 99,
+            title: "random title",
+            topic: "random topic",
+            author: "random author",
+            body: "random body",
+            created_at: 2023,
+            votes: 999,
+            article_img_url: "random url",
+            random_property: "random value"
+        }
+      return request(app).patch('/api/articles/1').send(updatedVotes).expect(200).then(({ body }) => {
+        const { article } = body
+        expect(article).toMatchObject({
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: expect.any(String),
+            votes: 125,
+            article_img_url:
+                "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+              
+        })
+        expect(article).not.toHaveProperty('random_property')
+        expect(article.created_at).not.toBe(2023)
+      })
+    })
+    test('404: returns error when user inputs non-existent ID', () => {
+        const updatedVotes = { inc_votes : 25 }
+        return request(app).patch('/api/articles/999').send(updatedVotes).expect(404).then(({ body }) => {
+            const { msg } = body
+            expect(msg).toBe("Not Found")
+        })
+    })
+    test('400: returns error when user inputs invalid ID', () => {
+        const updatedVotes = { inc_votes : 25 }
+        return request(app).patch('/api/articles/one').send(updatedVotes).expect(400).then(({ body }) => {
+            const { msg } = body
+            expect(msg).toBe("Bad Request")
+        })
+    })
+    test('400: returns error when user inputs invalid inc_votes type', () => {
+        const updatedVotes = { inc_votes : "twentyfive" }
+        return request(app).patch('/api/articles/1').send(updatedVotes).expect(400).then(({ body }) => {
+            const { msg } = body
+            expect(msg).toBe("Bad Request")
+        })
+    })
+  })
 
