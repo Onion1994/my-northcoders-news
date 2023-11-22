@@ -33,7 +33,6 @@ exports.addCommentByArticleId = (body, author, article_id) => {
         return data.rows
     })
     .catch((err) => {
-        console.log(err)
     })
 }
 

@@ -34,6 +34,7 @@ describe('GET /api/articles/:article_id', () => {
     test('200: returns an article object by its ID', () => {
         return request(app).get('/api/articles/1').expect(200).then(({ body }) => {
             const { article } = body
+            console.log(article)
             expect(article.article_id).toBe(1)
             expect(article).toMatchObject({
                 title: expect.any(String),
@@ -157,20 +158,19 @@ describe('GET /api/articles/:article_id/comments', () =>{
 })
 
 describe('POST /api/articles/:article_id/comments', () => {
-    test('201: user can post new comments to any article', () => {
+    test('201: user can post new comments under specific articles', () => {
         const newComment = {
             username: 'butter_bridge',
             body: 'this comment got posted'
         }
         return request(app).post('/api/articles/3/comments').send(newComment).expect(201).then(({ body }) => {
             const { comment } = body
-            const postedComment = comment[0]
-            expect(postedComment.comment_id).toBe(19)
-            expect(postedComment.author).toBe('butter_bridge')
-            expect(postedComment.body).toBe('this comment got posted')
-            expect(postedComment.votes).toBe(0)
-            expect(postedComment.article_id).toBe(3)
-            expect(postedComment.created_at).toEqual(expect.any(String))
+            expect(comment.comment_id).toBe(19)
+            expect(comment.author).toBe('butter_bridge')
+            expect(comment.body).toBe('this comment got posted')
+            expect(comment.votes).toBe(0)
+            expect(comment.article_id).toBe(3)
+            expect(comment.created_at).toEqual(expect.any(String))
         })
     })
     test('404: returns error when user inputs non-existent ID', () => {

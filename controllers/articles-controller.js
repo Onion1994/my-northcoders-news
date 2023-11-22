@@ -45,7 +45,8 @@ exports.postComment = (req, res, next) => {
     const commentsPromises = [commentPromise, articleExistencePromise, userExistencePromise]
     Promise.all(commentsPromises)
     .then((resolvedPromises) => {
-        const comment = resolvedPromises[0]
+        const commentArray = resolvedPromises[0]
+        const comment = commentArray[0]
         res.status(201).send({ comment })
     })
     .catch((err) => {
