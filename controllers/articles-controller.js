@@ -39,13 +39,8 @@ exports.postComment = (req, res, next) => {
     const body = req.body.body
     const author = req.body.username
     const article_id = req.params.article_id
-    const commentPromise = addCommentByArticleId(body, author, article_id)
-    const articleExistencePromise = checkExists("articles", "article_id", article_id);
-    const userExistencePromise = checkExists("users", "username", author)
-    const commentsPromises = [commentPromise, articleExistencePromise, userExistencePromise]
-    Promise.all(commentsPromises)
-    .then((resolvedPromises) => {
-        const commentArray = resolvedPromises[0]
+    addCommentByArticleId(body, author, article_id)
+    .then((commentArray) => {
         const comment = commentArray[0]
         res.status(201).send({ comment })
     })
