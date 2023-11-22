@@ -208,7 +208,7 @@ describe('POST /api/articles/:article_id/comments', () => {
         const newComment = {
             username: 'butter_bridge',
             body: 'this comment got posted',
-            votes: 0,
+            votes: 99,
             article_id: 99,
             created_at: 2023,
             random_property: "random Value"
