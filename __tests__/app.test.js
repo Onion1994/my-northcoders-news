@@ -111,6 +111,27 @@ describe('GET /api/articles', () => {
             expect(articles[0].comment_count).toBe("2")
         })
     })
+    test('200: should filter the articles by the topic value specified in the query', () => {
+        return request(app).get('/api/articles?topic=cats').expect(200).then(({ body }) => {
+            const { articles } = body
+            expect(articles).toHaveLength(1)
+            articles.forEach((article) => {
+                expect(article.topic).toBe('cats')
+            })
+        })
+    })
+    test("200: should return an empty array if the given topic exists, but there are no articles associated with it", () => {
+        return request(app).get('/api/articles?topic=paper').expect(200).then(({ body }) => {
+            const { articles } = body
+            expect(articles).toEqual([])
+        })
+    })
+    test('404: returns an error when user inputs non-existent topic query', () => {
+        return request(app).get('/api/articles?topic=dogs').expect(404).then(({ body }) => {
+            const { msg } = body
+            expect(msg).toEqual('Not Found')
+        })
+    })
 })
 
 describe('GET /api/articles/:article_id/comments', () =>{
