@@ -45,6 +45,18 @@ describe('GET /api/articles/:article_id', () => {
             })
         })
     })
+    test('200: an article response object should also include comment_count', () => {
+        return request(app).get('/api/articles/5').expect(200).then(({ body }) => {
+            const { article } = body
+            expect(article.comment_count).toBe("2")
+        })
+    })
+    test("200: comment_count should be '0' if an article has no comments", () => {
+        return request(app).get('/api/articles/4').expect(200).then(({ body }) => {
+            const { article } = body
+            expect(article.comment_count).toBe("0")
+        })
+    })
     test('404: returns error when user inputs non-existent ID', () => {
         return request(app).get('/api/articles/999').expect(404).then(({ body }) => {
             const { msg } = body
