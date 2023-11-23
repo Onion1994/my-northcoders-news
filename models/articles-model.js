@@ -13,14 +13,11 @@ exports.selectArticleById = (id) => {
 
 exports.selectAllArticles = (topic) => {
     if (topic) {
-        // checkExists('topics', 'slug', topic)
-        // .then(() => {
             return db.query(`SELECT title, article_id, topic, created_at, votes, article_img_url, (
                 SELECT COUNT(*) 
                 FROM comments 
                 WHERE comments.article_id = articles.article_id
             ) AS comment_count FROM articles WHERE topic = $1 ORDER BY created_at DESC`, [topic])
-        // })
         .then((data) => {
             return data.rows
         })
