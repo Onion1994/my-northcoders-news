@@ -25,7 +25,7 @@ describe('GET /api/topics', () => {
         })
     })
     test('404: returns an error for an invalid endpoint', () => {
-        return request(app).get('/api/invalid-endpoint').expect(404)
+        return request(app).get('/api/topic').expect(404)
     })
 })
 
@@ -332,4 +332,23 @@ describe('DELETE /api/comments/:comment_id', () => {
             expect(msg).toBe('Bad Request')
         })
     })
+})
+
+describe('GET /api/users', () => {
+    test ('200: returns an array of user objects, each of which having a username, name and avatar_url properties', () => {
+      return request(app).get('/api/users').expect(200).then(({ body }) => {
+          const { users } = body
+          expect(users).toHaveLength(4);
+          users.forEach((user) => {
+              expect(user).toMatchObject({
+                  username: expect.any(String),
+                  name: expect.any(String),
+                  avatar_url: expect.any(String)
+              })
+          })
+      })
+  })
+  test('404: returns an error for an invalid endpoint', () => {
+    return request(app).get('/api/user').expect(404)
+})
 })
