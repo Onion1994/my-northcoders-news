@@ -2,7 +2,11 @@ const db = require('../db/connection')
 const { checkExists } = require('../db/seeds/utils')
 
 exports.selectArticleById = (id) => {
-    return db.query(`SELECT * FROM articles WHERE articles.article_id = $1`, [id]).then((data) => {
+    return db.query(`SELECT article_id, title, topic, author, body, created_at, votes, article_img_url, 
+    (SELECT COUNT(*)
+    FROM comments
+    WHERE comments.article_id = articles.article_id
+    ) AS comment_count FROM articles WHERE article_id = $1`, [id]).then((data) => {
         if (!data.rows.length) {
             return Promise.reject({ status: 404, msg: 'Not Found'})
         } else {
