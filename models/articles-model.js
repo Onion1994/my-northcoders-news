@@ -34,7 +34,6 @@ exports.addCommentByArticleId = (body, author, article_id) => {
 }
 
 exports.updateArticlesVotes = (inc_votes, article_id) => {
-    if (inc_votes > 0) {
       return db.query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *`, [inc_votes, article_id]).then((data) => {
         if (!data.rows.length) {
             return Promise.reject({ status: 404, msg: 'Not Found'})
@@ -42,18 +41,4 @@ exports.updateArticlesVotes = (inc_votes, article_id) => {
             return data.rows
         }
     })
-    }
-    else if (inc_votes < 0) {
-        const positive_inc_votes = -inc_votes
-      return db.query(`UPDATE articles SET votes = votes - $1 WHERE article_id = $2 RETURNING *`, [positive_inc_votes, article_id]).then((data) => {
-        if (!data.rows.length) {
-            return Promise.reject({ status: 404, msg: 'Not Found'})
-        } else {
-            return data.rows
-        }
-    })
-    }
-    else {
-        return Promise.reject({ status: 400, msg: 'Bad Request'})
-    }
-  }
+}
