@@ -12,6 +12,19 @@ exports.getArticles = (req, res, next) => {
                 next(err)
             });
     } else {
+        const { topic } = req.query
+        if (topic) {
+            checkExists("topics", "slug", topic)
+            .then(() => {
+                selectAllArticles(topic)
+                .then((articles) => {
+                    res.status(200).send({ articles })
+                })
+            })
+            .catch((err) => {
+                next(err)
+            });
+        } else {
         selectAllArticles()
             .then((articles) => {
                 res.status(200).send({ articles })
@@ -19,8 +32,9 @@ exports.getArticles = (req, res, next) => {
             .catch((err) => {
                 next(err)
             });
+        }
     }
-};
+}
 
 exports.getComments = (req, res, next) => {
     const id = req.params.article_id

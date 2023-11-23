@@ -1,4 +1,5 @@
 const db = require('../db/connection')
+const { checkExists } = require('../db/seeds/utils')
 
 exports.selectArticleById = (id) => {
     return db.query(`SELECT * FROM articles WHERE articles.article_id = $1`, [id]).then((data) => {
@@ -10,7 +11,20 @@ exports.selectArticleById = (id) => {
     })
 }
 
-exports.selectAllArticles = () => {
+exports.selectAllArticles = (topic) => {
+    if (topic) {
+        // checkExists('topics', 'slug', topic)
+        // .then(() => {
+            return db.query(`SELECT title, article_id, topic, created_at, votes, article_img_url, (
+                SELECT COUNT(*) 
+                FROM comments 
+                WHERE comments.article_id = articles.article_id
+            ) AS comment_count FROM articles WHERE topic = $1 ORDER BY created_at DESC`, [topic])
+        // })
+        .then((data) => {
+            return data.rows
+        })
+    } else {
     return db.query(`SELECT title, article_id, topic, created_at, votes, article_img_url, (
         SELECT COUNT(*) 
         FROM comments 
@@ -19,6 +33,7 @@ exports.selectAllArticles = () => {
     .then((data) => {
         return data.rows
     })
+}
 }
 
 exports.selectArticlesComments = (id) => {
