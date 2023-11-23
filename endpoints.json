@@ -6,7 +6,7 @@
       "endpoints":
       {
       "GET /api/topics": {
-      "description": "serves an array of all topics",
+      "description": "serves up an array of all topics",
       "queries": [],
       "exampleResponse": {
         "topics": [{ "slug": "football", "description": "Footie!" }]
@@ -15,14 +15,14 @@
   }
   },
   "GET /api/topics": {
-    "description": "serves an array of all topics",
+    "description": "serves up an array of all topics",
     "queries": [],
     "exampleResponse": {
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all articles",
+    "description": "serves up an array of all articles",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
@@ -48,7 +48,7 @@
     }
   },
   "GET /api/articles/:article_id" : {
-    "description": "serves a specific article object by its ID",
+    "description": "serves up a given article object by its ID",
     "queries": [],
     "exampleResponse": {
       "article": 
@@ -64,7 +64,7 @@
       }
     },
   "GET /api/articles/:article_id/comments" : {
-    "description": "serves an array of comments for the given article",
+    "description": "serves up an array of comments for the given article",
     "queries": [],
     "exampleResponse": {
       "comments": [
@@ -88,7 +88,7 @@
     }
   },
   "POST /api/articles/:article_id/comments" : {
-    "description": "allows the user to post a new comment under a specific article and serves the the new comment object",
+    "description": "allows the user to post a new comment under a given article and serves up the new comment object",
     "queries": [],
     "exampleResponse": {
       "comment":
@@ -103,7 +103,7 @@
     }
   },
   "PATCH /api/articles/:article_id": {
-    "description": "increments or decrements an article's votes by a specified amount and serves the updated article object",
+    "description": "increments or decrements a given article's votes by a specified amount and serves up the updated article object",
     "queries": [],
     "exampleResponse": {
       "article": 
@@ -117,5 +117,11 @@
           "comment_count": 6
         }
       }
+    },
+    "DELETE /api/comments/:comment_id": {
+      "description": "deletes a given comment by comment_id",
+    "queries": [],
+    "exampleResponse": {}
     }
 }
+
