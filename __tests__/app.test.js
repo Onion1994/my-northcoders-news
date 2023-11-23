@@ -25,7 +25,7 @@ describe('GET /api/topics', () => {
         })
     })
     test('404: returns an error for an invalid endpoint', () => {
-        return request(app).get('/api/topic').expect(404)
+        return request(app).get('/api/invalid-endpoint').expect(404)
     })
 })
 
@@ -348,7 +348,4 @@ describe('GET /api/users', () => {
           })
       })
   })
-  test('404: returns an error for an invalid endpoint', () => {
-    return request(app).get('/api/user').expect(404)
-})
 })
