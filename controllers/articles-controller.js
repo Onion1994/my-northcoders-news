@@ -2,9 +2,10 @@ const { selectArticleById, selectAllArticles, selectArticlesComments, addComment
 const { checkExists } = require("../db/seeds/utils")
 
 exports.getArticles = (req, res, next) => {
-    const id = req.params.article_id
-    if (id) {
-        selectArticleById(id)
+    const { article_id } = req.params
+    const { sort_by, order, topic } = req.query
+    if (article_id) {
+        selectArticleById(article_id)
             .then((article) => {
                 res.status(200).send({ article })
             })
@@ -12,11 +13,10 @@ exports.getArticles = (req, res, next) => {
                 next(err)
             });
     } else {
-        const { topic } = req.query
         if (topic) {
             checkExists("topics", "slug", topic)
             .then(() => {
-                selectAllArticles(topic)
+                selectAllArticles(sort_by, order, topic)
                 .then((articles) => {
                     res.status(200).send({ articles })
                 })
@@ -25,7 +25,7 @@ exports.getArticles = (req, res, next) => {
                 next(err)
             });
         } else {
-        selectAllArticles()
+        selectAllArticles(sort_by, order)
             .then((articles) => {
                 res.status(200).send({ articles })
             })

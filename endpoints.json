@@ -22,8 +22,8 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves up an array of all articles and accepts queries to filter articles by topic",
-    "queries": ["topic"],
+    "description": "serves up an array of all articles. It accepts a topic query that filters the articles by topic;a sort_by query that sorts articles by any valid column with a default descending order; and a order query, which sets the sorting order",
+    "queries": ["topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
         {
