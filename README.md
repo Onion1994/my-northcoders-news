@@ -19,17 +19,15 @@ The Northcoders News API serves as a platform to access articles, comments, user
 
 The endpoint `GET /api` provides a list detailing all the available endpoints on this API and how they should be interacted with.
 
-### Getting Started
+## Getting Started
 
 To get the API running on your local machine, follow these steps:
 
-#### Cloning
-
-Clone this repository to your local machine using:
+Start by cloning this repository to your local machine using:
 
 git clone https://github.com/Onion1994/my-northcoders-news.git
 
-## Setting Up Environment Variables
+### Setting Up Environment Variables
 
 To successfully run this project locally, follow these steps to create the necessary environment variables:
 
