@@ -3,7 +3,6 @@ const app = require('../app')
 const data = require('../db/data/test-data/index')
 const seed = require('../db/seeds/seed')
 const request = require('supertest')
-const { string } = require('pg-format')
 
 beforeEach(() => seed(data))
 
@@ -38,6 +37,7 @@ describe('GET /api/articles/:article_id', () => {
             expect(article).toMatchObject({
                 title: expect.any(String),
                 topic: expect.any(String),
+                author: expect.any(String),
                 body: expect.any(String),
                 created_at: expect.any(String),
                 votes: expect.any(Number),
@@ -95,6 +95,7 @@ describe('GET /api/articles', () => {
                     title: expect.any(String),
                     article_id: expect.any(Number),
                     topic: expect.any(String),
+                    author: expect.any(String),
                     created_at: expect.any(String),
                     votes: expect.any(Number),
                     article_img_url: expect.any(String),
@@ -142,6 +143,42 @@ describe('GET /api/articles', () => {
         return request(app).get('/api/articles?topic=dogs').expect(404).then(({ body }) => {
             const { msg } = body
             expect(msg).toEqual('Not Found')
+        })
+    })
+    test('200: should accept a sort_by query which sorts the articles by any valid column with a default descending order', () => {
+        return request(app).get('/api/articles?sort_by=votes').expect(200).then(({ body }) => {
+            const { articles } = body
+            expect(articles).toBeSortedBy("votes", { descending: true })
+        })
+    })
+    test('200: should accept an order query which allows to set the order to ascending', () => {
+        return request(app).get('/api/articles?sort_by=title&order=asc').expect(200).then(({ body }) => {
+            const { articles } = body
+            expect(articles).toBeSortedBy("title", { ascending: true })
+        })
+    })
+    test('200: should accept an order query which allows to set the order to descending', () => {
+        return request(app).get('/api/articles?sort_by=author&order=desc').expect(200).then(({ body }) => {
+            const { articles } = body
+            expect(articles).toBeSortedBy("author", { descending: true })
+        })
+    })
+    test('200: should accept all queries and order the filtered articles by the given column in the given order', () => {
+        return request(app).get('/api/articles?topic=mitch&sort_by=article_id&order=asc').expect(200).then(({ body }) => {
+            const { articles } = body
+            expect(articles).toBeSortedBy("article_id", { ascending: true })
+        })
+    })
+    test('400: returns an error when user inputs invalid sort_by criteria', () => {
+        return request(app).get('/api/articles?sort_by=invalid_input').expect(400).then(({ body }) => {
+            const { msg } = body
+            expect(msg).toEqual('Bad Request')
+        })
+    })
+    test('400: returns an error when user inputs invalid order criteria', () => {
+        return request(app).get('/api/articles?sort_by=votes&order=invalid_input').expect(400).then(({ body }) => {
+            const { msg } = body
+            expect(msg).toEqual('Bad Request')
         })
     })
 })
