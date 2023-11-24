@@ -160,8 +160,13 @@ describe('GET /api/articles', () => {
     test('200: should accept an order query which allows to set the order to descending', () => {
         return request(app).get('/api/articles?sort_by=author&order=desc').expect(200).then(({ body }) => {
             const { articles } = body
-            console.log(articles)
             expect(articles).toBeSortedBy("author", { descending: true })
+        })
+    })
+    test('200: should accept all queries and order the filtered articles by the given column in the given order', () => {
+        return request(app).get('/api/articles?topic=mitch&sort_by=article_id&order=asc').expect(200).then(({ body }) => {
+            const { articles } = body
+            expect(articles).toBeSortedBy("article_id", { ascending: true })
         })
     })
     test('400: returns an error when user inputs invalid sort_by criteria', () => {
