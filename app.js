@@ -7,7 +7,7 @@ const commentsRouter = require('./routes/comments-router')
 const usersRouter = require('./routes/users-router')
 const { getEndpoints } = require('./controllers/endpoints-controller')
 
-const app = express()
+const app = express();
 
 app.use(express.json())
 
