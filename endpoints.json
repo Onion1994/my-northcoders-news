@@ -87,6 +87,10 @@
   "POST /api/articles/:article_id/comments" : {
     "description": "allows the user to post a new comment under a given article and serves up the new comment object",
     "queries": [],
+    "exampleRequest" : {
+      "username": "butter_bridge",
+      "body": "this comment got posted"
+  },
     "exampleResponse": {
       "comment":
         {
@@ -102,6 +106,7 @@
   "PATCH /api/articles/:article_id": {
     "description": "increments or decrements a given article's votes by a specified amount and serves up the updated article object",
     "queries": [],
+    "exampleRequest" : { "inc_votes" : 25 },
     "exampleResponse": {
       "article": 
         {
