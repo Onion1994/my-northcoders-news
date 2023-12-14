@@ -16,7 +16,7 @@ exports.selectArticleById = (article_id) => {
 }
 
 exports.selectAllArticles = (sort_by = "created_at", order = "desc", topic) => {
-    const verifiedSort_by = ["created_at", "votes", "article_id", "title", "topic", "author"]
+    const verifiedSort_by = ["created_at", "votes", "article_id", "title", "topic", "author", "comment_count"]
     const verifiedOrder = ["asc", "desc"]
     let queryString = `SELECT title, article_id, topic, author, created_at, votes, article_img_url, (
         SELECT COUNT(*) 

@@ -146,7 +146,7 @@ describe('GET /api/articles', () => {
         })
     })
     test('200: should accept a sort_by query which sorts the articles by any valid column with a default descending order', () => {
-        return request(app).get('/api/articles?sort_by=votes').expect(200).then(({ body }) => {
+        return request(app).get('/api/articles?sort_by=comment_count').expect(200).then(({ body }) => {
             const { articles } = body
             expect(articles).toBeSortedBy("votes", { descending: true })
         })
