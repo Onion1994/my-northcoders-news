@@ -439,3 +439,77 @@ describe('GET /api/users/:username', () => {
         })
     })
   })
+
+  describe('PATCH /api/comments/:comment_id', () => {
+    test('200: increments the votes of a specific comment by a specified amount', () => {
+      const updatedVotes = { inc_votes : 25 }
+      return request(app).patch('/api/comments/1').send(updatedVotes).expect(200).then(({ body }) => {
+        const { comment } = body
+        expect(comment).toMatchObject({
+            body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+            votes: 41,
+            author: "butter_bridge",
+            article_id: 9,
+            created_at: expect.any(String)
+          })
+      })
+    })
+    test('200: decrements the votes of a specific comment by a specified amount', () => {
+      const updatedVotes = { inc_votes : -25 }
+      return request(app).patch('/api/comments/1').send(updatedVotes).expect(200).then(({ body }) => {
+        const { comment } = body
+        expect(comment).toMatchObject({
+            body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+            votes: -9,
+            author: "butter_bridge",
+            article_id: 9,
+            created_at: expect.any(String)
+          })
+      })
+    })
+    test("200: should ignore unnecessary properties on the inc_votes'body", () => {
+        const updatedVotes = { 
+            inc_votes : 25,
+            comment_id: 99,
+            title: "random title",
+            author: "random author",
+            body: "random body",
+            created_at: 2023,
+            votes: 999,
+            random_property: "random value"
+        }
+      return request(app).patch('/api/comments/1').send(updatedVotes).expect(200).then(({ body }) => {
+        const { comment } = body
+        expect(comment).toMatchObject({
+            body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+            votes: 41,
+            author: "butter_bridge",
+            article_id: 9,
+            created_at: expect.any(String)
+          })
+        expect(comment).not.toHaveProperty('random_property')
+        expect(comment.created_at).not.toBe(2023)
+      })
+    })
+    test('404: returns error when user inputs non-existent ID', () => {
+        const updatedVotes = { inc_votes : 25 }
+        return request(app).patch('/api/comments/999').send(updatedVotes).expect(404).then(({ body }) => {
+            const { msg } = body
+            expect(msg).toBe("Not Found")
+        })
+    })
+    test('400: returns error when user inputs invalid ID', () => {
+        const updatedVotes = { inc_votes : 25 }
+        return request(app).patch('/api/comments/one').send(updatedVotes).expect(400).then(({ body }) => {
+            const { msg } = body
+            expect(msg).toBe("Bad Request")
+        })
+    })
+    test('400: returns error when user inputs invalid inc_votes type', () => {
+        const updatedVotes = { inc_votes : "twentyfive" }
+        return request(app).patch('/api/comments/1').send(updatedVotes).expect(400).then(({ body }) => {
+            const { msg } = body
+            expect(msg).toBe("Bad Request")
+        })
+    })
+  })

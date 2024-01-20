@@ -120,6 +120,20 @@
     "queries": [],
     "exampleResponse": {}
   },
+  "PATCH /api/comments/:comment_id": {
+    "description": "increments or decrements a given comment's votes by a specified amount and serves up the updated comment object",
+    "queries": [],
+    "exampleRequest": { "inc_votes": 25 },
+    "exampleResponse": {
+      "article": {
+        "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        "votes": 41,
+        "author": "butter_bridge",
+        "article_id": 9,
+        "created_at": 1586179020000
+      }
+    }
+  },
   "GET /api/users": {
     "description": "serves up an array of all users",
     "queries": [],
